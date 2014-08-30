@@ -1,0 +1,104 @@
+<?php
+/**
+ * @file
+ * Provide customizable tokens for all defined field_collections.
+ */
+
+/**
+ * Implements hook_menu().
+ * // TODO: fix access permissions
+ */
+function field_collection_tokens_menu() {
+  $items = array();
+  $items['admin/structure/field-collections/tokens'] = array(
+    'title' => 'Field collection Tokens',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('field_collection_tokens_fieldmapping_form', 1),
+    'access callback' => 'user_access',
+    'access arguments' => array('access administration menu'),
+    'file' => 'field_collection_tokens.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+ }
+
+/**
+ * Implements hook_token_info().
+ */
+function field_collection_tokens_token_info() {
+  $info = array();
+
+  $map = variable_get('field_collection_tokens_map', array());
+  foreach($map as $field_name => $token) {
+    $info['tokens']['field_collection_token'][$token] = array(
+      'name' => t('Token for %field_name', array('%field_name', $field_name)),
+      'description' => t('Token for %field_name', array('%field_name', $field_name)),
+    );
+  }
+  $info['types'] = array(
+    'field_collection_token' => array(
+      'name' => t('Custom Field collection tokens'),
+      'description' => t('Custom tokens for Field collection items on nodes.'),
+      'needs-data' => 'node',
+    ),
+  );
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ *
+ * Warning: we deviate from the standard way tokens are supposed to be used.
+ *
+ * Bit of a hairy implementation: rather than following the [type:token] pattern
+ * We're using [token:delta], since the point of this module is to allow users
+ * to define their own tokens and not restrict them to [foo:token].
+ *
+ */
+function field_collection_tokens_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $replacements = array();
+  $token = $type;
+  foreach ($tokens as $delta => $original) {
+
+    $map = variable_get('field_collection_tokens_map', array());
+    $field_name = array_search($token, $map);
+
+    if ($field_name) {
+      $entity_ids = array();
+      if ($delta == 'all') {
+        // dpr($data['node']);
+        // exit;
+        // Fetch all field_collection item values.
+        if (is_array($data['node']->{$field_name}[LANGUAGE_NONE])) {
+          foreach($data['node']->{$field_name}[LANGUAGE_NONE] as $item) {
+            $entity_ids[] = $item['value'];
+          }
+        }
+      }
+      else {
+        $delta = (int) $delta;
+        // In this case we need to substitute the token with a specific
+        // value (delta) of a multivalue'd field_collection item.
+
+        // When someone wants the field_collection item's first value,
+        // we retrieve value with index 0, etc.
+        $delta = $delta - 1;
+
+        // Retrieve the fieldcollection entity's id that matches
+        // the requested delta.
+        if (isset($data['node']->{$field_name}[LANGUAGE_NONE][$delta])) {
+          $entity_ids[] = $data['node']->{$field_name}[LANGUAGE_NONE][$delta]['value'];
+        }
+      }
+      $entities = entity_load('field_collection_item', $entity_ids);
+
+      // Use the 'token' display mode if available. If it's not available
+      // Drupal will fall back to the 'default' display mode.
+      $entity = entity_view('field_collection_item', $entities, 'token');
+      $value = render($entity);
+
+    }
+    $replacements[$original] = $value;
+  }
+  return $replacements;
+}

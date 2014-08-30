@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * @File.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function field_collection_tokens_uninstall() {
+  variable_del('field_collection_tokens_map');
+}
