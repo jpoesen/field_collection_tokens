@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @File.
+ * @file
+ * Provides install, uninstall and update functions.
  */
 
 /**

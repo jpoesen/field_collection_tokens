@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Provide admin settings form to manage tokens.
+ */
+
+/**
  * Implements hook_form().
  */
 function field_collection_tokens_fieldmapping_form($form, &$form_state) {
@@ -29,7 +34,7 @@ function field_collection_tokens_fieldmapping_form($form, &$form_state) {
     $message = t(
       'No Field collection fields have been defined yet.
       To get started, add one to a content type of your choice in !url.',
-      array('!url' => l('admin/structure/types', 'admin/structure/types'))
+      array('!url' => l(t('admin/structure/types'), 'admin/structure/types'))
     );
     drupal_set_message($message, 'warning');
   }
@@ -41,10 +46,10 @@ function field_collection_tokens_fieldmapping_form($form, &$form_state) {
  */
 function field_collection_tokens_fieldmapping_form_submit($form, &$form_state) {
   $map = array();
-  //Store all submitted tokens as a single serialised array
-  //in the variables table.
-  foreach($form_state['values'] as $key => $value) {
-    if(substr_count($key, 'field_collection_tokens_') > 0) {
+  // Store all submitted tokens as a single serialised array
+  // in the variables table.
+  foreach ($form_state['values'] as $key => $value) {
+    if (substr_count($key, 'field_collection_tokens_') > 0) {
       // Filter out field_collection name
       // (the bit between 'field_collection_tokens_' and '_token')
       $start = 24;
@@ -72,6 +77,3 @@ function field_collection_tokens_fieldmapping_form_submit($form, &$form_state) {
 function field_collection_tokens_fieldmapping_form_validate($form, &$form_state) {
   // TODO: input validation: only allow az-09_-
 }
-
-
-

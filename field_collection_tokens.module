@@ -6,13 +6,14 @@
 
 /**
  * Implements hook_menu().
- * // TODO: fix access permissions
+ *
+ * // TODO: fix access permissions.
  */
 function field_collection_tokens_menu() {
   $items = array();
   $items['admin/structure/field-collection-tokens'] = array(
-    'title' => t('Field collection Tokens'),
-    'description' => t('Define tokens for your Field collections.'),
+    'title' => 'Field collection Tokens',
+    'description' => 'Define tokens for your Field collections.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('field_collection_tokens_fieldmapping_form'),
     'access arguments' => array('administer field collections'),
@@ -20,7 +21,7 @@ function field_collection_tokens_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   return $items;
- }
+}
 
 /**
  * Implements hook_token_info().
@@ -29,7 +30,7 @@ function field_collection_tokens_token_info() {
   $info = array();
 
   $map = variable_get('field_collection_tokens_map', array());
-  foreach($map as $field_name => $token) {
+  foreach ($map as $field_name => $token) {
     $info['tokens']['field_collection_token'][$token] = array(
       'name' => t('Token for %field_name', array('%field_name', $field_name)),
       'description' => t('Token for %field_name', array('%field_name', $field_name)),
@@ -53,7 +54,6 @@ function field_collection_tokens_token_info() {
  * Bit of a hairy implementation: rather than following the [type:token] pattern
  * We're using [token:delta], since the point of this module is to allow users
  * to define their own tokens and not restrict them to [foo:token].
- *
  */
 function field_collection_tokens_tokens($type, $tokens, array $data = array(), array $options = array()) {
   $replacements = array();
@@ -70,7 +70,7 @@ function field_collection_tokens_tokens($type, $tokens, array $data = array(), a
         // exit;
         // Fetch all field_collection item values.
         if (is_array($data['node']->{$field_name}[LANGUAGE_NONE])) {
-          foreach($data['node']->{$field_name}[LANGUAGE_NONE] as $item) {
+          foreach ($data['node']->{$field_name}[LANGUAGE_NONE] as $item) {
             $entity_ids[] = $item['value'];
           }
         }
@@ -106,7 +106,7 @@ function field_collection_tokens_tokens($type, $tokens, array $data = array(), a
 /**
  * Implements hook_field_delete_field().
  */
-function field_collection_tokens_field_delete_field($field)  {
+function field_collection_tokens_field_delete_field($field) {
   if ($field['type'] == 'field_collection') {
     $map = variable_get('field_collection_tokens_map', array());
     unset($map[$field['field_name']]);
