@@ -43,6 +43,10 @@ function field_collection_tokens_fieldmapping_form_submit($form, &$form_state) {
       $value = str_replace('[', '', $value);
       $value = str_replace(']', '', $value);
 
+      // These do a pretty good job of cleaning up whatever is thrown at it.
+      $value = check_plain($value);
+      $value = drupal_html_id($value);
+
       $map[$field_name] = $value;
     }
   }
