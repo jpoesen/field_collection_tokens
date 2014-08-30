@@ -1,5 +1,6 @@
 name = Field Collection Tokens
 description = Provides flexible, customizable tokens for your field_collection fields.
 core = 7.x
+version = 7.x-1.x
 dependencies[] = token
 dependencies[] = field_collection
