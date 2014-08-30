@@ -10,12 +10,12 @@
  */
 function field_collection_tokens_menu() {
   $items = array();
-  $items['admin/structure/field-collections/tokens'] = array(
-    'title' => 'Field collection Tokens',
+  $items['admin/structure/field-collection-tokens'] = array(
+    'title' => t('Field collection Tokens'),
+    'description' => t('Define tokens for your Field collections.'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('field_collection_tokens_fieldmapping_form', 1),
-    'access callback' => 'user_access',
-    'access arguments' => array('access administration menu'),
+    'page arguments' => array('field_collection_tokens_fieldmapping_form'),
+    'access arguments' => array('administer field collections'),
     'file' => 'field_collection_tokens.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
@@ -101,4 +101,15 @@ function field_collection_tokens_tokens($type, $tokens, array $data = array(), a
     $replacements[$original] = $value;
   }
   return $replacements;
+}
+
+/**
+ * Implements hook_field_delete_field().
+ */
+function field_collection_tokens_field_delete_field($field)  {
+  if ($field['type'] == 'field_collection') {
+    $map = variable_get('field_collection_tokens_map', array());
+    unset($map[$field['field_name']]);
+    variable_set('field_collection_tokens_map', $map);
+  }
 }
