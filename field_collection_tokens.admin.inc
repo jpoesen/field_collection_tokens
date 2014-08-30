@@ -5,9 +5,12 @@
  */
 function field_collection_tokens_fieldmapping_form($form, &$form_state) {
   $map = variable_get('field_collection_tokens_map', array());
+  $field_collections_present = FALSE;
+
   // Generate input field for each defined field_collection field.
   foreach (field_info_fields() as $field) {
     if ($field['type'] == 'field_collection') {
+      $field_collections_present = TRUE;
       $form['field_collection_tokens_' . $field['field_name'] . '_token'] = array(
         '#type' => 'textfield',
         '#title' => t('Token for: %field', array('%field' => $field['field_name'])),
@@ -16,11 +19,20 @@ function field_collection_tokens_fieldmapping_form($form, &$form_state) {
     }
   }
 
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save tokens'),
-  );
-
+  if ($field_collections_present) {
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save tokens'),
+    );
+  }
+  else {
+    $message = t(
+      'No Field collection fields have been defined yet.
+      To get started, add one to a content type of your choice in !url.',
+      array('!url' => l('admin/structure/types', 'admin/structure/types'))
+    );
+    drupal_set_message($message, 'warning');
+  }
   return $form;
 }
 
