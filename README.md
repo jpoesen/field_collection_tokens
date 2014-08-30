@@ -4,6 +4,9 @@ Field collection Tokens
 This module allows administrators to define custom tokens for any field_collection
 fields on their nodes.
 
+The 'token' display mode is used for rendering subsituted field_collection fields. 
+Rendering falls back to 'default' display mode if 'token' mode is not used.
+
 Best used together with token_filter so users can use tokens in textareas
 to target field_collection values.
 
@@ -34,8 +37,7 @@ Result:
 
 When the article is displayed, the first two tokens will be replaced by the example
 field_collection's first and second values. The third token will be replaced by
-all the values
-
+all the values.
 
 
 **Implementation:**
