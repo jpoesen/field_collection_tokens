@@ -60,8 +60,8 @@ function field_collection_tokens_tokens($type, $tokens, array $data = array(), a
   $value = '';
   $token = $type;
 
+  $map = variable_get('field_collection_tokens_map', array());
   foreach ($tokens as $delta => $original) {
-    $map = variable_get('field_collection_tokens_map', array());
     $field_name = array_search($token, $map);
     if ($field_name) {
       $entity_ids = array();
@@ -97,8 +97,8 @@ function field_collection_tokens_tokens($type, $tokens, array $data = array(), a
       $entity = entity_view('field_collection_item', $entities, 'token');
       $value = render($entity);
 
+      $replacements[$original] = $value;
     }
-    $replacements[$original] = $value;
   }
   return $replacements;
 }
