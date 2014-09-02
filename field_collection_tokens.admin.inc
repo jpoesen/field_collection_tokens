@@ -49,7 +49,7 @@ function field_collection_tokens_fieldmapping_form_submit($form, &$form_state) {
   // Store all submitted tokens as a single serialised array
   // in the variables table.
   foreach ($form_state['values'] as $key => $value) {
-    if (substr_count($key, 'field_collection_tokens_') > 0) {
+    if (substr_count($key, 'field_collection_tokens_') > 0 && (!empty($value))) {
       // Filter out field_collection name
       // (the bit between 'field_collection_tokens_' and '_token')
       $start = 24;
